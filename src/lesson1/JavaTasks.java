@@ -46,9 +46,9 @@ public class JavaTasks {
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
     static public void sortTimes(String inputName, String outputName){
-        try{
-
-            FileReader read = new FileReader(inputName);
+        try(FileWriter write = new FileWriter(outputName);
+            FileReader read = new FileReader(inputName);)
+        {
             List<Integer> list = new ArrayList<>();
             Scanner scanner = new Scanner(read);
             SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss aa");
@@ -65,11 +65,14 @@ public class JavaTasks {
             // Сортируем полученные строки и записываем их в файл в исходном формате
             StringBuilder line = new StringBuilder();
             list.stream().sorted().forEach(value -> line.append(format.format(new Date(value))).append("\n"));
-            FileWriter write = new FileWriter(outputName);
+            System.out.println(line);
             write.write(line.toString());
         } catch (IOException | ParseException e){
             e.printStackTrace();
         }
+        // N - кол-во строк в исходном тексте
+        //Трудоемкость = 0(N * log N)
+        //Ресурсоемкость = 0(N)
     }
 
 
@@ -143,7 +146,7 @@ public class JavaTasks {
         double t;
         int i = 0;
         //Переводи температуры в удобный для сортировки формат
-        while (true) {
+        while (i < text.size()) {
             String line = text.get(i);
             if (line == null)
                 break;
@@ -166,6 +169,9 @@ public class JavaTasks {
             writer.newLine();
         }
         writer.close();
+        // N - кол-во строк в исходном тексте
+        //Трудоемкость = O(N)
+        //Ресурсоемкость = O(N)
     }
 
     /**
@@ -197,9 +203,7 @@ public class JavaTasks {
      * 2
      * 2
      */
-    static public void sortSequence(String inputName, String outputName) throws IOException {
-
-    }
+    static public void sortSequence(String inputName, String outputName){throw new NotImplementedError();}
 
     /**
      * Соединить два отсортированных массива в один
