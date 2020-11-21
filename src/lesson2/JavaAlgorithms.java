@@ -97,9 +97,39 @@ public class JavaAlgorithms {
      * Если имеется несколько самых длинных общих подстрок одной длины,
      * вернуть ту из них, которая встречается раньше в строке first.
      */
-    static public String longestCommonSubstring(String firs, String second) {
-        throw new NotImplementedError();
+    static public String longestCommonSubstring(String first, String second){
+        int lenght1 = first.length();
+        int lenght2 = second.length();
+        // Создаем матрицу по длинам 1 и 2 строки
+        int[][] matrix = new int[lenght1][lenght2];
+        int max = 0;
+        // Записываем в матрицу кол-во повторений букв из строк
+        for (int j = 0; j < lenght1; j++) {
+            for (int i = 0; i < lenght2; i++) {
+                if (first.charAt(j) == second.charAt(i)) {
+                    if (j == 0 || i == 0) {
+                        matrix[j][i] = 1;
+                    } else {
+                        matrix[j][i] = matrix[j - 1][i - 1] + 1;
+                    }
+                }
+            }
+        }
+        // Находим максимум из матрицы
+        int x = 0;
+        for (int j = 0; j < lenght1; j++) {
+            for (int i = 0; i < lenght2; i++) {
+                if (matrix[j][i] > max) {
+                    x = j;
+                    max = matrix[j][i];
+                }
+            }
+        }
+        int start = x - max + 1;
+        int end = x + 1;
+        return first.substring(start, end);
     }
+
 
     /**
      * Число простых чисел в интервале
@@ -111,7 +141,22 @@ public class JavaAlgorithms {
      * Справка: простым считается число, которое делится нацело только на 1 и на себя.
      * Единица простым числом не считается.
      */
-    static public int calcPrimesNumber(int limit) {
-        throw new NotImplementedError();
+    static public int calcPrimesNumber(int limit){
+        if (limit <= 1 ) return 0;
+        if (limit == 2 ) return 1;
+        int counter = 0;
+        int[] array = new int[limit];
+        for (int i = 0; i < limit; i++){
+            array[i] = 1;
+        }
+        for (int i = 2; i < limit; i++){
+            if (array[i] == 1)
+                for (int j = 2; i * j < limit; j++) {
+                        array[i * j] = 0;
+                }
+            counter++;
+        }
+        return counter;
     }
+    // Решето Эратосфена
 }

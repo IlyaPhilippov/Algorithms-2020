@@ -2,6 +2,17 @@ package lesson1;
 
 import kotlin.NotImplementedError;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Scanner;
+
+
 @SuppressWarnings("unused")
 public class JavaTasks {
     /**
@@ -34,9 +45,33 @@ public class JavaTasks {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    static public void sortTimes(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortTimes(String inputName, String outputName){
+        try{
+
+            FileReader read = new FileReader(inputName);
+            List<Integer> list = new ArrayList<>();
+            Scanner scanner = new Scanner(read);
+            SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss aa");
+            // Записываем все строки нужно нам формата в лист, если попадется неправильная - бросаем ошибку
+            // При этом стори переводятся в int через SimpleDataFormat
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                try {
+                    list.add((int) format.parse(line).getTime());
+                } catch (ParseException e) {
+                    throw new ParseException("Date format is incorrect", e.getErrorOffset());
+                }
+            }
+            // Сортируем полученные строки и записываем их в файл в исходном формате
+            StringBuilder line = new StringBuilder();
+            list.stream().sorted().forEach(value -> line.append(format.format(new Date(value))).append("\n"));
+            FileWriter write = new FileWriter(outputName);
+            write.write(line.toString());
+        } catch (IOException | ParseException e){
+            e.printStackTrace();
+        }
     }
+
 
     /**
      * Сортировка адресов
@@ -98,8 +133,39 @@ public class JavaTasks {
      * 99.5
      * 121.3
      */
-    static public void sortTemperatures(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortTemperatures(String inputName, String outputName) throws IOException {
+        int min = 2730;
+        int max = 5000;
+        int limit = min + max;
+        // Записывае все из исходного файла в лист
+        List<String> text = new ArrayList<>(Files.readAllLines(Paths.get(inputName)));
+        List<Integer> temps = new ArrayList<>();
+        double t;
+        int i = 0;
+        //Переводи температуры в удобный для сортировки формат
+        while (true) {
+            String line = text.get(i);
+            if (line == null)
+                break;
+            t = Double.parseDouble(line) * 10 + min;
+            temps.add((int) t);
+            i++;
+        }
+        // Перезаписываем все из листа в массив и сортируем
+        int[] array = new int[temps.size()];
+        for (int j = 0; j < temps.size(); j++) {
+            array[j] = temps.get(j);
+        }
+        array = Sorts.countingSort(array, limit);
+        // Записываем отсортированые температуры в выходной файл в прежнем формате
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputName));
+        for (int element : array) {
+            t = element;
+            t = (t - min) / 10;
+            writer.write(String.valueOf(t));
+            writer.newLine();
+        }
+        writer.close();
     }
 
     /**
@@ -131,8 +197,8 @@ public class JavaTasks {
      * 2
      * 2
      */
-    static public void sortSequence(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortSequence(String inputName, String outputName) throws IOException {
+
     }
 
     /**
